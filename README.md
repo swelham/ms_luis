@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/swelham/ms_luis.svg?branch=master)](https://travis-ci.org/swelham/ms_luis)
+
 # MsLuis
 
 **TODO: Add description**
