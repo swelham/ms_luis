@@ -4,11 +4,21 @@ defmodule MsLuis do
   """
 
   @doc """
+  Sends a request to the LUIS service for the given `query`
+  
+  Args
+  
+    * `query` - a binary that is to be sent to the LUIS service
 
+  Usage
+
+      MsLuis.get_intent("turn off the lights")
+      # {:ok, %{"topScoringIntent" => "lights_off", ...}}
   """
+  @spec get_intent(binary) :: {atom, map} | {:error, binary | atom}
   def get_intent(query) do
     query = URI.encode(query)
-    
+
     with config     <- Application.get_env(:ms_luis, :config),
          {:ok, url} <- build_url(config, query)
     do
@@ -33,7 +43,7 @@ defmodule MsLuis do
     end
   end
 
-  defp respond({content, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
+  defp respond({_, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
   defp respond({content, _}), do: {:ok, content}
   defp respond(resp), do: resp
 end
