@@ -7,6 +7,8 @@ defmodule MsLuis do
 
   """
   def get_intent(query) do
+    query = URI.encode(query)
+    
     with config     <- Application.get_env(:ms_luis, :config),
          {:ok, url} <- build_url(config, query)
     do
