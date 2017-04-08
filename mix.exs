@@ -3,8 +3,10 @@ defmodule MsLuis.Mixfile do
 
   def project do
     [app: :ms_luis,
-     version: "0.1.0",
+     version: "1.0.0",
      elixir: "~> 1.4",
+     description: description(),
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps()]
@@ -24,5 +26,16 @@ defmodule MsLuis.Mixfile do
       {:credo, "~> 0.7.2", only: [:dev, :test]},
       {:bypass, "~> 0.6.0", only: :test}
     ]
+  end
+
+  defp description do
+    "A small library that can send requests to the Microsoft LUIS service."
+  end
+
+  defp package do
+    [name: :ms_luis,
+     maintainers: ["swelham"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/swelham/ms_luis"}]
   end
 end
