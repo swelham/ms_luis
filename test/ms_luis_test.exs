@@ -35,6 +35,4 @@ defmodule MsLuisTest do
 
     assert result == %{"topScoringIntent" => "test"}
   end
-
-  defp test_url(bypass), do: ""
 end
