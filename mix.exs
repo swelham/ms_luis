@@ -18,7 +18,7 @@ defmodule MsLuis.Mixfile do
 
   defp deps do
     [
-      {:ivar, "~> 0.3.0"},
+      {:ivar, "~> 0.7.0"},
       {:poison, "~> 3.0"},
 
       # dev deps
