@@ -20,9 +20,39 @@ defmodule MsLuis.Apps do
       # {:ok, "<GUID>"}
   """
   @spec add(map) :: {:ok, binary} | {:error, binary | atom}
-  def add(params) do
+  def add(params), do: send_request(params)
+
+  @doc """
+  Sends a request to create an new prebuilt application and returns the ID for the newly created application
+
+  Args
+
+    * `params` - a map that represents the data required for the add prebuilt application endpoint
+
+  Usage
+
+      MsLuis.Apps.add_prebuilt(%{domain_name: "Web", culture: "en-us"})
+      # {:ok, "<GUID>"}
+  """
+  @spec add_prebuilt(map) :: {:ok, binary} | {:error, binary | atom}
+  def add_prebuilt(params) do
+    params
+    |> replace_key(:domain_name, :domainName)
+    |> send_request("customprebuiltdomains")
+  end
+
+  defp replace_key(map, from, to) do
+    value = Map.get(map, from)
+    
+    map
+    |> Map.put(to, value)
+    |> Map.drop([from])
+  end
+
+  defp send_request(params), do: send_request(params, "")
+  defp send_request(params, endpoint) do
     with config         <- Application.get_env(:ms_luis, :config),
-         {:ok, url}     <- build_url(config),
+         {:ok, url}     <- build_url(endpoint, config),
          {:ok, sub_key} <- Keyword.fetch(config, :sub_key)
     do
       Ivar.new(:post, url)
@@ -40,13 +70,18 @@ defmodule MsLuis.Apps do
   defp respond({content, _}), do: {:ok, content}
   defp respond(resp), do: resp
 
-  defp build_url(nil), do: {:error, "No config found for :ms_luis"}
-  defp build_url(config) do
+  defp build_url(_, nil), do: {:error, "No config found for :ms_luis"}
+  defp build_url(endpoint, config) do
     url = case Keyword.fetch(config, :url) do
       {:ok, cfg_url} -> cfg_url
       _ -> @base_url
     end
-
-    {:ok, "#{url}/luis/api/v2.0/apps"}
+    |> Kernel.<>("/luis/api/v2.0/apps")
+    |> append_endpoint(endpoint)
+    
+    {:ok, url}
   end
+
+  defp append_endpoint(url, ""), do: url
+  defp append_endpoint(url, endpoint), do: "#{url}/#{endpoint}"
 end
