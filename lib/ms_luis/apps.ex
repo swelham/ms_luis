@@ -43,7 +43,7 @@ defmodule MsLuis.Apps do
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
-    
+
     map
     |> Map.put(to, value)
     |> Map.drop([from])
@@ -78,7 +78,7 @@ defmodule MsLuis.Apps do
     end
     |> Kernel.<>("/luis/api/v2.0/apps")
     |> append_endpoint(endpoint)
-    
+
     {:ok, url}
   end
 
