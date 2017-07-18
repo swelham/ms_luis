@@ -1,6 +1,6 @@
 defmodule MsLuisTest.Apps do
   use ExUnit.Case
-  doctest MsLuis
+  doctest MsLuis.Apps
 
   import MsLuisTest.TestMacros
 
