@@ -8,11 +8,21 @@ defmodule MsLuis.Apps do
   @base_url "https://westus.api.cognitive.microsoft.com"
 
   @doc """
+  Sends a request to create an new application and returns the ID for the newly created application
+
+  Args
+
+    * `params` - a map that represents the data required for the add application endpoint
+
+  Usage
+
+      MsLuis.Apps.add(%{name: "My App", culture: "en-us"})
+      # {:ok, "<GUID>"}
   """
   @spec add(map) :: {:ok, binary} | {:error, binary | atom}
   def add(params) do
-    with config     <- Application.get_env(:ms_luis, :config),
-         {:ok, url} <- build_url(config),
+    with config         <- Application.get_env(:ms_luis, :config),
+         {:ok, url}     <- build_url(config),
          {:ok, sub_key} <- Keyword.fetch(config, :sub_key)
     do
       Ivar.new(:post, url)
@@ -32,11 +42,11 @@ defmodule MsLuis.Apps do
 
   defp build_url(nil), do: {:error, "No config found for :ms_luis"}
   defp build_url(config) do
-    with {:ok, url}     <- Keyword.fetch(config, :url)
-    do
-      {:ok, "#{url || @base_url}/luis/api/v2.0/apps"}
-    else
-      _ -> {:error, "There is a missing value in the config for :ms_luis"}
+    url = case Keyword.fetch(config, :url) do
+      {:ok, cfg_url} -> cfg_url
+      _ -> @base_url
     end
+
+    {:ok, "#{url}/luis/api/v2.0/apps"}
   end
 end
