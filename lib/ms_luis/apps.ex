@@ -3,6 +3,8 @@ defmodule MsLuis.Apps do
     The `MsLuis.Apps` module is used to manage the `apps` resource on the Microsoft LUIS API.
   """
 
+  alias Ivar.Headers
+
   @base_url "https://westus.api.cognitive.microsoft.com"
 
   @doc """
@@ -15,7 +17,7 @@ defmodule MsLuis.Apps do
     do
       Ivar.new(:post, url)
       |> Ivar.put_body(params, :json)
-      |> Ivar.Headers.put("ocp-apim-subscription-key", sub_key)
+      |> Headers.put("ocp-apim-subscription-key", sub_key)
       |> Ivar.send
       |> Ivar.unpack
       |> respond
@@ -36,5 +38,5 @@ defmodule MsLuis.Apps do
     else
       _ -> {:error, "There is a missing value in the config for :ms_luis"}
     end
-  end 
+  end
 end
