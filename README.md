@@ -22,8 +22,7 @@ Firstly setup the `:ms_luis` config in your applications config file
 config :ms_luis, :config,
   url: "https://westus.api.cognitive.microsoft.com",
   app_key: "<your-application-key>",
-  sub_key: "<your-subscription-key>",
-  ssl_protocol: :"tlsv1.2"
+  sub_key: "<your-subscription-key>"
 ```
 
 Then you can call the `MsLuis.get_intent/1` function with the text you wish to get the intent for.
