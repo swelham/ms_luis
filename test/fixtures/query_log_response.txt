@@ -1,0 +1,2 @@
+"Query","UTC DateTime","Response"
+"turn the lights off",07/19/2017 12:55:20,"{""query"":""turn the lights off"",""intents"":[{""intent"":""lights_off"",""score"":0.1140182},{""intent"":""None"",""score"":0.0388641022}],""entities"":[]}"

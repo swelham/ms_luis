@@ -63,4 +63,49 @@ defmodule MsLuisTest.Apps do
 
     assert :ok == Apps.delete("123")
   end
+  
+  # test "get_query_logs/1 should return the query logs for a given application", %{bypass: bypass} do
+  #   Bypass.expect bypass, fn conn ->
+  #     assert conn.method == "GET"
+  #     assert conn.request_path == "/luis/api/v2.0/apps/123/queryLogs"
+  #     assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+  #     Plug.Conn.send_resp(conn, 200, "")
+  #   end
+
+  #   {:ok, [log]} = Apps.get_query_logs("123")
+
+  #   assert log["query"] == "turn the lights off"
+  #   assert log["datetime"] == "07/19/2017 12:55:20"
+  #   assert log["response"] == %{
+  #     "query" => "turn the lights off",
+  #     "intents" => [
+  #       %{
+  #         "intent" => "lights_off",
+  #         "score" => 0.1140182
+  #       },
+  #       %{
+  #         "None" => "lights_off",
+  #         "score" => 0.0388641022
+  #       }
+  #     ],
+  #     "entities" => []
+  #   }
+  # end
+  
+  test "get_query_logs/2 should return the raw query logs for a given application", %{bypass: bypass} do
+    req_response = File.read!("test/fixtures/query_log_response.txt")
+
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/123/queryLogs"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      Plug.Conn.send_resp(conn, 200, req_response)
+    end
+
+    {:ok, raw_logs} = Apps.get_query_logs("123", output: :raw)
+
+    assert raw_logs == req_response
+  end
 end
