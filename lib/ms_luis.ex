@@ -5,13 +5,14 @@ defmodule MsLuis do
 
   ## Configuration of SSL protocol
   It is possible to override the default ssl_protocol using configuration
-
+  
+  ```
   config :ms_luis, :config,
     url: "https://westus.api.cognitive.microsoft.com",
     app_key: "<your-application-key>",
     sub_key: "<your-subscription-key>",
     ssl_protocol: :"tlsv1.2"
-
+  ```
   """
 
   @doc """
