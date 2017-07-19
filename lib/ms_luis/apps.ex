@@ -56,8 +56,29 @@ defmodule MsLuis.Apps do
   @spec delete(binary) :: :ok | {:error, binary | atom}
   def delete(app_id), do: send_request(app_id, :delete)
 
+  @doc """
+  Returns the query logs for the given application
+
+  Args
+
+    * `app_id` - a binary containing the id for the application to be deleted
+    * `opts` - a keyword list of options
+
+  Options
+
+    * `:output` - determines the output format of the result, available values are `:raw | :parsed`. Default is: `:parsed`
+
+  Usage
+
+      MsLuis.Apps.get_query_logs("4754ab84-7590-4bbe-a723-38151a7fee09")
+      # [%{ query: "turn the lights off", datetime: "07/19/2017 12:55:20", response: %{...}}]
+  """
+  @spec get_query_logs(binary, Keyword.t) :: {:ok, map | binary} | {:error, binary | atom}
   def get_query_logs(app_id, opts \\ []) do
+    output = Keyword.get(opts, :output, :parsed)
+
     send_request(app_id, :get, "queryLogs")
+    |> transform_query_logs(output)
   end
 
   defp replace_key(map, from, to) do
@@ -66,6 +87,35 @@ defmodule MsLuis.Apps do
     map
     |> Map.put(to, value)
     |> Map.drop([from])
+  end
+
+  defp transform_query_logs({:ok, _}, output) when not output in [:raw, :parsed], do:
+    {:error, "':#{output}' is not a valid output type"}
+  defp transform_query_logs({:ok, logs}, :parsed) do
+    logs = logs
+    |> String.split("\n")
+    |> Enum.drop(1)
+    |> Enum.map(&map_log_item/1)
+    |> Enum.filter(& &1 != nil)
+
+    {:ok, logs}
+  end
+  defp transform_query_logs(logs, _), do: logs
+
+  defp map_log_item(""), do: nil
+  defp map_log_item(log) do
+    [query, datetime, response] = log
+    |> String.replace("\r", "")
+    |> String.replace("\"\"", "\"")
+    |> String.split(",", parts: 3)
+
+    response = String.replace(response, ~r/"({)|(})"/, "\\1\\2")
+
+    %{
+      query: String.replace(query, "\"", ""),
+      datetime: datetime,
+      response: Poison.decode!(response)
+    }
   end
 
   #defp send_request(params), do: send_request(params, :get, "")
