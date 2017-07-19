@@ -20,7 +20,7 @@ defmodule MsLuis.Apps do
       # {:ok, "<GUID>"}
   """
   @spec add(map) :: {:ok, binary} | {:error, binary | atom}
-  def add(params), do: send_request(params)
+  def add(params), do: send_request(params, :post)
 
   @doc """
   Sends a request to create an new prebuilt application and returns the ID for the newly created application
@@ -32,14 +32,29 @@ defmodule MsLuis.Apps do
   Usage
 
       MsLuis.Apps.add_prebuilt(%{domain_name: "Web", culture: "en-us"})
-      # {:ok, "<GUID>"}
+      # {:ok, "4754ab84-7590-4bbe-a723-38151a7fee09"}
   """
   @spec add_prebuilt(map) :: {:ok, binary} | {:error, binary | atom}
   def add_prebuilt(params) do
     params
     |> replace_key(:domain_name, :domainName)
-    |> send_request("customprebuiltdomains")
+    |> send_request(:post, "customprebuiltdomains")
   end
+
+  @doc """
+  Sends a request to delete an existing application
+
+  Args
+
+    * `app_id` - a binary containing the id for the application to be deleted
+
+  Usage
+
+      MsLuis.Apps.delete("4754ab84-7590-4bbe-a723-38151a7fee09")
+      # :ok
+  """
+  @spec delete(binary) :: :ok | {:error, binary | atom}
+  def delete(app_id), do: send_request(app_id, :delete)
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
@@ -49,14 +64,14 @@ defmodule MsLuis.Apps do
     |> Map.drop([from])
   end
 
-  defp send_request(params), do: send_request(params, "")
-  defp send_request(params, endpoint) do
+  #defp send_request(params), do: send_request(params, :get, "")
+  defp send_request(params, method), do: send_request(params, method, "")
+  defp send_request(params, method, endpoint) do
     with config         <- Application.get_env(:ms_luis, :config),
          {:ok, url}     <- build_url(endpoint, config),
          {:ok, sub_key} <- Keyword.fetch(config, :sub_key)
     do
-      Ivar.new(:post, url)
-      |> Ivar.put_body(params, :json)
+      build_request(method, url, params)
       |> Headers.put("ocp-apim-subscription-key", sub_key)
       |> Ivar.send
       |> Ivar.unpack
@@ -67,8 +82,21 @@ defmodule MsLuis.Apps do
   end
 
   defp respond({_, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
+  defp respond({"", _}), do: :ok
   defp respond({content, _}), do: {:ok, content}
   defp respond(resp), do: resp
+
+  defp build_request(method, url, params) when method in [:get, :delete] do
+    query = build_url_query(params)
+
+    Ivar.new(method, url <> query)
+  end
+  defp build_request(method, url, params) do
+    Ivar.new(method, url)
+    |> Ivar.put_body(params, :json)
+  end
+
+  defp build_url_query(params) when is_binary(params), do: "/#{params}"
 
   defp build_url(_, nil), do: {:error, "No config found for :ms_luis"}
   defp build_url(endpoint, config) do

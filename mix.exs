@@ -18,8 +18,11 @@ defmodule MsLuis.Mixfile do
 
   defp deps do
     [
-      {:ivar, "~> 0.3.0"},
+      {:ivar, "~> 0.7.0"},
       {:poison, "~> 3.0"},
+
+      # we currently need this as running on windows fails with idna version 5
+      {:idna, "~> 4.0"},
 
       # dev deps
       {:ex_doc, "~> 0.15.0", only: :dev},

@@ -51,4 +51,16 @@ defmodule MsLuisTest.Apps do
 
     assert id == "123"
   end
+  
+  test "delete/1 should send a valid delete application request", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "DELETE"
+      assert conn.request_path == "/luis/api/v2.0/apps/123"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      Plug.Conn.send_resp(conn, 200, "")
+    end
+
+    assert :ok == Apps.delete("123")
+  end
 end
