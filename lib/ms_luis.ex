@@ -32,7 +32,7 @@ defmodule MsLuis do
     opts = []
     
     with config             <- Application.get_env(:ms_luis, :config),
-	 {:ok, url}         <- build_url(config, query),
+         {:ok, url}         <- build_url(config, query),
          {:ok, merged_opts} <- build_opts(config, opts)
       do
       Ivar.new(:get, url, merged_opts)
@@ -40,7 +40,7 @@ defmodule MsLuis do
       |> Ivar.unpack
       |> respond
       else
-	err -> err
+        err -> err
     end
   end
 
@@ -65,9 +65,9 @@ defmodule MsLuis do
          {:ok, app_key} <- Keyword.fetch(config, :app_key),
          {:ok, sub_key} <- Keyword.fetch(config, :sub_key)
       do
-      {:ok, "#{url}/luis/v2.0/apps/#{app_key}?subscription-key=#{sub_key}&verbose=true&q=#{query}"}
+        {:ok, "#{url}/luis/v2.0/apps/#{app_key}?subscription-key=#{sub_key}&verbose=true&q=#{query}"}
       else
-	_ -> {:error, "There is a missing value in the config for :ms_luis"}
+        _ -> {:error, "There is a missing value in the config for :ms_luis"}
     end
   end
 
