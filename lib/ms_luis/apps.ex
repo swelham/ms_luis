@@ -156,7 +156,7 @@ defmodule MsLuis.Apps do
   def get_prebuilt_domains(), do: send_request("customprebuiltdomains")
 
   @doc """
-  Returns a list of custom prebuilt domains
+  Returns a list of custom prebuilt domains for the given `culture`
 
   Args
 
