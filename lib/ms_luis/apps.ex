@@ -71,7 +71,7 @@ defmodule MsLuis.Apps do
   Usage
 
       MsLuis.Apps.get_query_logs("4754ab84-7590-4bbe-a723-38151a7fee09")
-      # [%{ query: "turn the lights off", datetime: "07/19/2017 12:55:20", response: %{...}}]
+      # {:ok, [%{ query: "turn the lights off", datetime: "07/19/2017 12:55:20", response: %{...}}]}
   """
   @spec get_query_logs(binary, Keyword.t) :: {:ok, map | binary} | {:error, binary | atom}
   def get_query_logs(app_id, opts \\ []) do
@@ -87,7 +87,7 @@ defmodule MsLuis.Apps do
   Usage
 
       MsLuis.Apps.get_cultures()
-      # {:ok, [%{"code" => "en-us", "name" => "English"}, ...}]
+      # {:ok, [%{"code" => "en-us", "name" => "English"}, ...}]}
   """
   @spec get_cultures() :: {:ok, list} | {:error, binary | atom}
   def get_cultures(), do: send_request("cultures")
@@ -98,7 +98,7 @@ defmodule MsLuis.Apps do
   Usage
 
       MsLuis.Apps.get_domains()
-      # {:ok, ["Business", "Communication", ...}]
+      # {:ok, ["Business", "Communication", ...}]}
   """
   @spec get_domains() :: {:ok, list} | {:error, binary | atom}
   def get_domains(), do: send_request("domains")
@@ -112,11 +112,26 @@ defmodule MsLuis.Apps do
 
   Usage
 
-      MsLuis.Apps.get_domains()
-      # {:ok, ["Business", "Communication", ...}]
+      MsLuis.Apps.get_info("123")
+      # {:ok, %{"id" => "123", "name" => "test_app", ...}}
   """
-  @spec get_domains() :: {:ok, list} | {:error, binary | atom}
+  @spec get_info(binary) :: {:ok, map} | {:error, binary | atom}
   def get_info(app_id), do: send_request(app_id, :get)
+
+  @doc """
+  Returns the application settings for the given `app_id`
+
+  Args
+
+    * `app_id` - a binary containing the id for the application
+
+  Usage
+
+      MsLuis.Apps.get_settings("123")
+      # {:ok, %{"id" => "123", "public" => true}}
+  """
+  @spec get_settings(binary) :: {:ok, map} | {:error, binary | atom}
+  def get_settings(app_id), do: send_request(app_id, :get, "settings")
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
