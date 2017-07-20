@@ -144,6 +144,33 @@ defmodule MsLuis.Apps do
   @spec get_usage_scenarios() :: {:ok, list} | {:error, binary | atom}
   def get_usage_scenarios(), do: send_request("usagescenarios")
 
+  @doc """
+  Returns a list of custom prebuilt domains
+
+  Usage
+
+      MsLuis.Apps.get_prebuilt_domains()
+      # {:ok, [%{"name" => "weather", ...}]}
+  """
+  @spec get_prebuilt_domains() :: {:ok, list} | {:error, binary | atom}
+  def get_prebuilt_domains(), do: send_request("customprebuiltdomains")
+
+  @doc """
+  Returns a list of custom prebuilt domains
+
+  Args
+
+    * `culture` - a binary containing a valid culture code (e.g. `en-us`)
+
+  Usage
+
+      MsLuis.Apps.get_prebuilt_domains("en-us")
+      # {:ok, [%{"name" => "weather", ...}]}
+  """
+  @spec get_prebuilt_domains(binary) :: {:ok, list} | {:error, binary | atom}
+  def get_prebuilt_domains(culture),
+    do: send_request("customprebuiltdomains/#{culture}")
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 
@@ -152,8 +179,8 @@ defmodule MsLuis.Apps do
     |> Map.drop([from])
   end
 
-  defp transform_query_logs({:ok, _}, output) when not output in [:raw, :parsed], do:
-    {:error, "':#{output}' is not a valid output type"}
+  defp transform_query_logs({:ok, _}, output) when not output in [:raw, :parsed],
+    do: {:error, "':#{output}' is not a valid output type"}
   defp transform_query_logs({:ok, logs}, :parsed) do
     logs = logs
     |> String.split("\n")

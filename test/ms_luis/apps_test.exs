@@ -202,4 +202,36 @@ defmodule MsLuisTest.Apps do
 
     assert scenarios == ["IoT", "Bot"]
   end
+
+  test "get_prebuilt_domains/0 should return a list of available prebuilt domains", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/customprebuiltdomains"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "[{\"name\":\"weather\"}]")
+    end
+
+    {:ok, domains} = Apps.get_prebuilt_domains()
+
+    assert domains == [%{"name" => "weather"}]
+  end
+
+  test "get_prebuilt_domains/1 should return a list of available prebuilt domains for a given culture", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/customprebuiltdomains/en-us"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "[{\"name\":\"weather\"}]")
+    end
+
+    {:ok, domains} = Apps.get_prebuilt_domains("en-us")
+
+    assert domains == [%{"name" => "weather"}]
+  end
 end
