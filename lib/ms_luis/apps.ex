@@ -17,7 +17,7 @@ defmodule MsLuis.Apps do
   Usage
 
       MsLuis.Apps.add(%{name: "My App", culture: "en-us"})
-      # {:ok, "<GUID>"}
+      # {:ok, "4754ab84-7590-4bbe-a723-38151a7fee09"}
   """
   @spec add(map) :: {:ok, binary} | {:error, binary | atom}
   def add(params), do: send_request(params, :post)
@@ -81,6 +81,17 @@ defmodule MsLuis.Apps do
     |> transform_query_logs(output)
   end
 
+  @doc """
+  Returns a list of available cultures
+
+  Usage
+
+      MsLuis.Apps.get_cultures()
+      # {:ok, [%{"code" => "en-us", "name" => "English"}, ...}]
+  """
+  @spec get_cultures() :: {:ok, list} | {:error, binary | atom}
+  def get_cultures(), do: send_request("cultures")
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 
@@ -118,7 +129,7 @@ defmodule MsLuis.Apps do
     }
   end
 
-  #defp send_request(params), do: send_request(params, :get, "")
+  defp send_request(endpoint), do: send_request(nil, :get, endpoint)
   defp send_request(params, method), do: send_request(params, method, "")
   defp send_request(params, method, endpoint) do
     with config         <- Application.get_env(:ms_luis, :config),
