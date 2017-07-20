@@ -154,4 +154,20 @@ defmodule MsLuisTest.Apps do
 
     assert domains == ["Business", "Communication"]
   end
+
+    test "get_info/1 should return the application info", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/123"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "{\"id\":\"123\",\"name\":\"test_app\"}")
+    end
+
+    {:ok, info} = Apps.get_info("123")
+
+    assert info == %{"id" => "123", "name" => "test_app"}
+  end
 end

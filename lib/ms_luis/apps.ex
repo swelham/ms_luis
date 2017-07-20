@@ -42,7 +42,7 @@ defmodule MsLuis.Apps do
   end
 
   @doc """
-  Sends a request to delete an existing application
+  Sends a request to delete an the application specified by the `app_id`
 
   Args
 
@@ -57,7 +57,7 @@ defmodule MsLuis.Apps do
   def delete(app_id), do: send_request(app_id, :delete)
 
   @doc """
-  Returns the query logs for the given application
+  Returns the application query logs for the given `app_id`
 
   Args
 
@@ -102,6 +102,21 @@ defmodule MsLuis.Apps do
   """
   @spec get_domains() :: {:ok, list} | {:error, binary | atom}
   def get_domains(), do: send_request("domains")
+
+  @doc """
+  Returns the application info for the given `app_id`
+
+  Args
+
+    * `app_id` - a binary containing the id for the application
+
+  Usage
+
+      MsLuis.Apps.get_domains()
+      # {:ok, ["Business", "Communication", ...}]
+  """
+  @spec get_domains() :: {:ok, list} | {:error, binary | atom}
+  def get_info(app_id), do: send_request(app_id, :get)
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
