@@ -234,4 +234,25 @@ defmodule MsLuisTest.Apps do
 
     assert domains == [%{"name" => "weather"}]
   end
+
+  test "get_assistants/0 should return a list of personal assitant applications", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/assistants"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "{\"endpointKeys\":[],\"endpointUrls\":{\"English\":\"EnglishDummyURL\"}}")
+    end
+
+    {:ok, assistants} = Apps.get_assistants()
+
+    assert assistants == %{
+      "endpointKeys" => [],
+      "endpointUrls" => %{
+        "English" => "EnglishDummyURL"
+      }
+    }
+  end
 end

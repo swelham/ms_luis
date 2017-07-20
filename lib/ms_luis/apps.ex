@@ -171,6 +171,17 @@ defmodule MsLuis.Apps do
   def get_prebuilt_domains(culture),
     do: send_request("customprebuiltdomains/#{culture}")
 
+  @doc """
+  Returns the endpoint URLs of the personal assistant applications
+
+  Usage
+
+      MsLuis.Apps.get_assistants()
+      # {:ok, %{"endpointKeys" => [],"endpointUrls" => %{...}}}
+  """
+  @spec get_assistants() :: {:ok, map} | {:error, binary | atom}
+  def get_assistants(), do: send_request("assistants")
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 
