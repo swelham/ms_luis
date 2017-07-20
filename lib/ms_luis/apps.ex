@@ -133,6 +133,17 @@ defmodule MsLuis.Apps do
   @spec get_settings(binary) :: {:ok, map} | {:error, binary | atom}
   def get_settings(app_id), do: send_request(app_id, :get, "settings")
 
+  @doc """
+  Returns a list of usage scenarios
+
+  Usage
+
+      MsLuis.Apps.get_usage_scenarios()
+      # {:ok, ["IoT", "Bot", ...}]}
+  """
+  @spec get_usage_scenarios() :: {:ok, list} | {:error, binary | atom}
+  def get_usage_scenarios(), do: send_request("usagescenarios")
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 

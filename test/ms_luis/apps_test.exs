@@ -171,7 +171,7 @@ defmodule MsLuisTest.Apps do
     assert info == %{"id" => "123", "name" => "test_app"}
   end
 
-    test "get_settings/1 should return the application settings", %{bypass: bypass} do
+  test "get_settings/1 should return the application settings", %{bypass: bypass} do
     Bypass.expect bypass, fn conn ->
       assert conn.method == "GET"
       assert conn.request_path == "/luis/api/v2.0/apps/123/settings"
@@ -182,8 +182,24 @@ defmodule MsLuisTest.Apps do
       |> Plug.Conn.send_resp(200, "{\"id\":\"123\",\"public\":true}")
     end
 
-    {:ok, info} = Apps.get_settings("123")
+    {:ok, settings} = Apps.get_settings("123")
 
-    assert info == %{"id" => "123", "public" => true}
+    assert settings == %{"id" => "123", "public" => true}
+  end
+
+  test "get_usage_scenarios/0 should return the application usage scenarios", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/usagescenarios"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "[\"IoT\", \"Bot\"]")
+    end
+
+    {:ok, scenarios} = Apps.get_usage_scenarios()
+
+    assert scenarios == ["IoT", "Bot"]
   end
 end
