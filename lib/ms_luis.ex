@@ -23,8 +23,8 @@ defmodule MsLuis do
 
   Usage
 
-  MsLuis.get_intent("turn off the lights")
-  # {:ok, %{"topScoringIntent" => "lights_off", ...}}
+      MsLuis.get_intent("turn off the lights")
+      # {:ok, %{"topScoringIntent" => "lights_off", ...}}
   """
   @spec get_intent(binary) :: {atom, map} | {:error, binary | atom}
   def get_intent(query) do
