@@ -92,6 +92,17 @@ defmodule MsLuis.Apps do
   @spec get_cultures() :: {:ok, list} | {:error, binary | atom}
   def get_cultures(), do: send_request("cultures")
 
+  @doc """
+  Returns a list of available domains
+
+  Usage
+
+      MsLuis.Apps.get_domains()
+      # {:ok, ["Business", "Communication", ...}]
+  """
+  @spec get_domains() :: {:ok, list} | {:error, binary | atom}
+  def get_domains(), do: send_request("domains")
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 

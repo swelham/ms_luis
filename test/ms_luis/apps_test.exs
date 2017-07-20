@@ -122,7 +122,7 @@ defmodule MsLuisTest.Apps do
 
     assert {:error, "':none' is not a valid output type"} = Apps.get_query_logs("123", output: :none)
   end
-  @tag me: true
+
   test "get_cultures/0 should return the list of available cultures", %{bypass: bypass} do
     Bypass.expect bypass, fn conn ->
       assert conn.method == "GET"
@@ -137,5 +137,21 @@ defmodule MsLuisTest.Apps do
     {:ok, cultures} = Apps.get_cultures()
 
     assert cultures == [%{"name" => "English", "code" => "en-us"}]
+  end
+
+  test "get_domains/0 should return the list of available domains", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps/domains"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "[\"Business\",\"Communication\"]")
+    end
+
+    {:ok, domains} = Apps.get_domains()
+
+    assert domains == ["Business", "Communication"]
   end
 end
