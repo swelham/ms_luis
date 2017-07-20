@@ -1,5 +1,4 @@
 defmodule MsLuis do
-
   @moduledoc """
   The `MsLuis` module is used to send requests to the LUIS service.
 
@@ -54,7 +53,7 @@ defmodule MsLuis do
   defp build_opts(nil, _), do: {:error, "No config found for :ms_luis"}
   defp build_opts(config, opts) do
     merged_opts = config[:ssl_protocol]
-    |> build_ssl_protocol_string()
+    |> build_ssl_protocol_string
     |> Keyword.merge(opts)
 
     {:ok, merged_opts}

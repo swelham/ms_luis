@@ -10,7 +10,7 @@ Add `ms_luis` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:ms_luis, "~> 1.0"}]
+  [{:ms_luis, "~> 2.0"}]
 end
 ```
 
