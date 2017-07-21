@@ -255,4 +255,37 @@ defmodule MsLuisTest.Apps do
       }
     }
   end
+
+  test "get/0 should return a list the users applications", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "[{\"id\":\"123\"}]")
+    end
+
+    {:ok, apps} = Apps.get()
+
+    assert apps == [%{"id" => "123"}]
+  end
+
+  test "get/1 should return a limited list the users applications", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      assert conn.method == "GET"
+      assert conn.request_path == "/luis/api/v2.0/apps"
+      assert conn.query_string == "skip=10&take=5"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(200, "[{\"id\":\"123\"}]")
+    end
+
+    {:ok, apps} = Apps.get(%{skip: 10, take: 5})
+
+    assert apps == [%{"id" => "123"}]
+  end
 end

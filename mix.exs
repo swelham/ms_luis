@@ -18,7 +18,7 @@ defmodule MsLuis.Mixfile do
 
   defp deps do
     [
-      {:ivar, "~> 0.7.0"},
+      {:ivar, "~> 0.8.1"},
       {:poison, "~> 3.0"},
 
       # we currently need this as running on windows fails with idna version 5
