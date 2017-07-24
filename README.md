@@ -2,7 +2,7 @@
 
 # MsLuis
 
-A small library that can send requests to the Microsoft LUIS service
+A client library for the Microsoft LUIS API
 
 ## Installation
 
@@ -31,4 +31,15 @@ Then you can call the `MsLuis.get_intent/1` function with the text you wish to g
 MsLuis.get_intent("turn off the lights")
 # {:ok, %{"topScoringIntent" => "lights_off", ...}}
 ```
+
+## TODO - API features to implement
+
+* [x] Apps
+* [ ] Examples
+* [ ] Features
+* [ ] Models
+* [ ] Permissions
+* [ ] Training
+* [ ] User
+* [ ] Versions
 
