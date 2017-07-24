@@ -329,4 +329,24 @@ defmodule MsLuisTest.Apps do
 
     assert app_id == "123"
   end
+
+  test "publish/2 should send a valid publish application request", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      {:ok, body, _} = Plug.Conn.read_body(conn)
+
+      assert conn.method == "POST"
+      assert conn.request_path == "/luis/api/v2.0/apps/123/publish"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+      assert has_header(conn, {"content-type", "application/json"})
+      assert body == "{\"versionId\":\"0.1\"}"
+
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(201, "{\"endpointUrl\":\"TestURL\"}")
+    end
+
+    {:ok, response} = Apps.publish("123", %{versionId: "0.1"})
+
+    assert response == %{"endpointUrl" => "TestURL"}
+  end
 end

@@ -227,7 +227,7 @@ defmodule MsLuis.Apps do
   Args
 
     * `params` - a map that contains the valid application structure
-    * `appName` - a binary used to specify the imported application name
+    * `app_name` - a binary used to specify the imported application name
 
   Usage
 
@@ -237,6 +237,23 @@ defmodule MsLuis.Apps do
   @spec import(map, binary) :: {:ok, binary} | {:error, binary | atom}
   def import(params, app_name),
     do: send_request("import", :post, body: params, query: %{appName: app_name})
+
+  @doc """
+  Send a request to publish an application for the given `app_id`
+
+  Args
+
+    * `app_id` - a binary contianing the application id to be published
+    * `params` - a map that contains the valid publish application structure
+
+  Usage
+
+      MsLuis.Apps.publish("4754ab84-7590-4bbe-a723-38151a7fee09", %{versionId: "0.1"})
+      # {:ok, %{"endpointUrl" => "TestURL", ...}}
+  """
+  @spec import(binary, map) :: {:ok, map} | {:error, binary | atom}
+  def publish(app_id, params),
+    do: send_request("publish", :post, param: app_id, body: params)
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
