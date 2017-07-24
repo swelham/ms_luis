@@ -272,6 +272,23 @@ defmodule MsLuis.Apps do
   def rename(app_id, params),
     do: send_request("", :put, param: app_id, body: params)
 
+  @doc """
+  Updates the application settings for the given `app_id`
+
+  Args
+
+    * `app_id` - a binary contianing the application id to be published
+    * `params` - a map that contains the valid application settings udpate request structure
+
+  Usage
+
+      MsLuis.Apps.update_settigns("4754ab84-7590-4bbe-a723-38151a7fee09", %{public: true})
+      # :ok
+  """
+  @spec update_settings(binary, map) :: {:ok, map} | {:error, binary | atom}
+  def update_settings(app_id, params),
+    do: send_request("settings", :put, param: app_id, body: params)
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 

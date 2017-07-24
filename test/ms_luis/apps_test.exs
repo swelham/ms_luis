@@ -365,4 +365,20 @@ defmodule MsLuisTest.Apps do
 
     assert :ok == Apps.rename("123", %{name: "new_name"})
   end
+
+  test "update_settings/2 should send a valid update application settings request", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      {:ok, body, _} = Plug.Conn.read_body(conn)
+
+      assert conn.method == "PUT"
+      assert conn.request_path == "/luis/api/v2.0/apps/123/settings"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+      assert has_header(conn, {"content-type", "application/json"})
+      assert body == "{\"public\":true}"
+
+      Plug.Conn.send_resp(conn, 200, "")
+    end
+
+    assert :ok == Apps.update_settings("123", %{public: true})
+  end
 end
