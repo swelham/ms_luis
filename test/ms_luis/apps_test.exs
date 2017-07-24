@@ -293,7 +293,7 @@ defmodule MsLuisTest.Apps do
     Bypass.expect bypass, fn conn ->
       {:ok, body, _} = Plug.Conn.read_body(conn)
 
-      assert conn.method == "PUT"
+      assert conn.method == "POST"
       assert conn.request_path == "/luis/api/v2.0/apps/import"
       assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
       assert has_header(conn, {"content-type", "application/json"})
@@ -313,7 +313,7 @@ defmodule MsLuisTest.Apps do
     Bypass.expect bypass, fn conn ->
       {:ok, body, _} = Plug.Conn.read_body(conn)
 
-      assert conn.method == "PUT"
+      assert conn.method == "POST"
       assert conn.request_path == "/luis/api/v2.0/apps/import"
       assert conn.query_string == "appName=test_app_query"
       assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})

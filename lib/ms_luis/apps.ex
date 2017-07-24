@@ -219,7 +219,7 @@ defmodule MsLuis.Apps do
       # {:ok, "4754ab84-7590-4bbe-a723-38151a7fee09"}
   """
   @spec import(map) :: {:ok, binary} | {:error, binary | atom}
-  def import(params), do: send_request("import", :put, body: params)
+  def import(params), do: send_request("import", :post, body: params)
 
   @doc """
   Imports an existing application
@@ -236,7 +236,7 @@ defmodule MsLuis.Apps do
   """
   @spec import(map, binary) :: {:ok, binary} | {:error, binary | atom}
   def import(params, app_name),
-    do: send_request("import", :put, body: params, query: %{appName: app_name})
+    do: send_request("import", :post, body: params, query: %{appName: app_name})
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
