@@ -244,7 +244,7 @@ defmodule MsLuis.Apps do
   Args
 
     * `app_id` - a binary contianing the application id to be published
-    * `params` - a map that contains the valid publish application structure
+    * `params` - a map that contains the valid publish application request structure
 
   Usage
 
@@ -254,6 +254,23 @@ defmodule MsLuis.Apps do
   @spec import(binary, map) :: {:ok, map} | {:error, binary | atom}
   def publish(app_id, params),
     do: send_request("publish", :post, param: app_id, body: params)
+
+  @doc """
+  Renames the application for the given `app_id`
+
+  Args
+
+    * `app_id` - a binary contianing the application id to be published
+    * `params` - a map that contains the valid rename application request structure
+
+  Usage
+
+      MsLuis.Apps.rename("4754ab84-7590-4bbe-a723-38151a7fee09", %{name: "my_new_name"})
+      # :ok
+  """
+  @spec rename(binary, map) :: {:ok, map} | {:error, binary | atom}
+  def rename(app_id, params),
+    do: send_request("", :put, param: app_id, body: params)
 
   defp replace_key(map, from, to) do
     value = Map.get(map, from)

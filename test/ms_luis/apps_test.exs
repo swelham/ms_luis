@@ -349,4 +349,20 @@ defmodule MsLuisTest.Apps do
 
     assert response == %{"endpointUrl" => "TestURL"}
   end
+
+  test "rename/2 should send a valid rename application request", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      {:ok, body, _} = Plug.Conn.read_body(conn)
+
+      assert conn.method == "PUT"
+      assert conn.request_path == "/luis/api/v2.0/apps/123"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+      assert has_header(conn, {"content-type", "application/json"})
+      assert body == "{\"name\":\"new_name\"}"
+
+      Plug.Conn.send_resp(conn, 200, "")
+    end
+
+    assert :ok == Apps.rename("123", %{name: "new_name"})
+  end
 end
