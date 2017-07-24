@@ -288,4 +288,45 @@ defmodule MsLuisTest.Apps do
 
     assert apps == [%{"id" => "123"}]
   end
+
+  test "import/1 should send a valid import application request", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      {:ok, body, _} = Plug.Conn.read_body(conn)
+
+      assert conn.method == "PUT"
+      assert conn.request_path == "/luis/api/v2.0/apps/import"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+      assert has_header(conn, {"content-type", "application/json"})
+      assert body == "{\"name\":\"test_app\"}"
+
+      conn
+      |> Plug.Conn.put_resp_content_type("text/plain")
+      |> Plug.Conn.send_resp(201, "123")
+    end
+
+    {:ok, app_id} = Apps.import(%{name: "test_app"})
+
+    assert app_id == "123"
+  end
+
+  test "import/2 should send a valid import application request with the appName query param", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      {:ok, body, _} = Plug.Conn.read_body(conn)
+
+      assert conn.method == "PUT"
+      assert conn.request_path == "/luis/api/v2.0/apps/import"
+      assert conn.query_string == "appName=test_app_query"
+      assert has_header(conn, {"ocp-apim-subscription-key", "my-sub-key"})
+      assert has_header(conn, {"content-type", "application/json"})
+      assert body == "{\"name\":\"test_app\"}"
+
+      conn
+      |> Plug.Conn.put_resp_content_type("text/plain")
+      |> Plug.Conn.send_resp(201, "123")
+    end
+
+    {:ok, app_id} = Apps.import(%{name: "test_app"}, "test_app_query")
+
+    assert app_id == "123"
+  end
 end

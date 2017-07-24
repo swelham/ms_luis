@@ -206,6 +206,38 @@ defmodule MsLuis.Apps do
   @spec get(map) :: {:ok, list} | {:error, binary | atom}
   def get(params), do: send_request("", :get, query: params)
 
+  @doc """
+  Imports an existing application
+
+  Args
+
+    * `params` - a map that contains the valid application structure
+
+  Usage
+
+      MsLuis.Apps.import(%{name: "test_app", ...})
+      # {:ok, "4754ab84-7590-4bbe-a723-38151a7fee09"}
+  """
+  @spec import(map) :: {:ok, binary} | {:error, binary | atom}
+  def import(params), do: send_request("import", :put, body: params)
+
+  @doc """
+  Imports an existing application
+
+  Args
+
+    * `params` - a map that contains the valid application structure
+    * `appName` - a binary used to specify the imported application name
+
+  Usage
+
+      MsLuis.Apps.import(%{name: "test_app", ...}, "my_test_app")
+      # {:ok, "4754ab84-7590-4bbe-a723-38151a7fee09"}
+  """
+  @spec import(map, binary) :: {:ok, binary} | {:error, binary | atom}
+  def import(params, app_name),
+    do: send_request("import", :put, body: params, query: %{appName: app_name})
+
   defp replace_key(map, from, to) do
     value = Map.get(map, from)
 
