@@ -71,7 +71,7 @@ defmodule MsLuis do
     end
   end
 
-  defp respond({_, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
+  defp respond({:error, %{reason: reason}}), do: {:error, reason}
   defp respond({content, _}), do: {:ok, content}
   defp respond(resp), do: resp
 end
