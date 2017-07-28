@@ -7,12 +7,13 @@ defmodule MsLuis do
   
   ```
   config :ms_luis, :config,
-    url: "https://westus.api.cognitive.microsoft.com",
     app_key: "<your-application-key>",
     sub_key: "<your-subscription-key>",
     ssl_protocol: :"tlsv1.2"
   ```
   """
+
+  @base_url "https://westus.api.cognitive.microsoft.com"
 
   @doc """
   Sends a request to the LUIS service for the given `query`
@@ -44,7 +45,6 @@ defmodule MsLuis do
     end
   end
 
-
   defp build_ssl_protocol_string(version) do
     default_protocol = :"tlsv1.2"
     [ssl: [{:versions, [version || default_protocol]}]]
@@ -58,16 +58,17 @@ defmodule MsLuis do
 
     {:ok, merged_opts}
   end
-  
+
   defp build_url(nil, _), do: {:error, "No config found for :ms_luis"}
   defp build_url(config, query) do
-    with {:ok, url}     <- Keyword.fetch(config, :url),
-         {:ok, app_key} <- Keyword.fetch(config, :app_key),
+    with {:ok, app_key} <- Keyword.fetch(config, :app_key),
          {:ok, sub_key} <- Keyword.fetch(config, :sub_key)
-      do
-        {:ok, "#{url}/luis/v2.0/apps/#{app_key}?subscription-key=#{sub_key}&verbose=true&q=#{query}"}
-      else
-        _ -> {:error, "There is a missing value in the config for :ms_luis"}
+    do
+      url = Keyword.get(config, :url, @base_url)
+
+      {:ok, "#{url}/luis/v2.0/apps/#{app_key}?subscription-key=#{sub_key}&verbose=true&q=#{query}"}
+    else
+      _ -> {:error, "There is a missing value in the config for :ms_luis"}
     end
   end
 

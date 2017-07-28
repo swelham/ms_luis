@@ -20,7 +20,6 @@ Firstly setup the `:ms_luis` config in your applications config file
 
 ```elixir
 config :ms_luis, :config,
-  url: "https://westus.api.cognitive.microsoft.com",
   app_key: "<your-application-key>",
   sub_key: "<your-subscription-key>"
 ```
