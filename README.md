@@ -34,7 +34,7 @@ MsLuis.get_intent("turn off the lights")
 ## TODO - API features to implement
 
 * [x] Apps
-* [ ] Examples
+* [x] Examples
 * [ ] Features
 * [ ] Models
 * [ ] Permissions
