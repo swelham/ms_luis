@@ -38,7 +38,7 @@ MsLuis.get_intent("turn off the lights")
 * [ ] Features
 * [ ] Models
 * [ ] Permissions
-* [ ] Training
+* [x] Training
 * [ ] User
 * [ ] Versions
 
