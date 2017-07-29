@@ -1,4 +1,6 @@
 defmodule MsLuisTest do
+  @moduledoc false
+  
   use ExUnit.Case
   doctest MsLuis
 
